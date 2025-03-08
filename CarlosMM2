@@ -2,7 +2,7 @@
 local RedzLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/XenTz-Z/RedzLibV5/main/Source.lua"))()
 
 -- Criar a janela principal
-local Window = RedzLib:CreateWindow("NahHub - MM2")
+local Window = RedzLib:CreateWindow("NewHub - MM2")
 
 -- Adicionar a aba "Visual"
 local VisualTab = Window:CreateTab("Visual")
