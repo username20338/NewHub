@@ -1,0 +1,74 @@
+- Carregar a biblioteca RedzLibV5
+local RedzLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/XenTz-Z/RedzLibV5/main/Source.lua"))()
+
+-- Criar a janela principal
+local Window = RedzLib:CreateWindow("NahHub - MM2")
+
+-- Adicionar a aba "Visual"
+local VisualTab = Window:CreateTab("Visual")
+
+-- Tabela para armazenar ESPs criados
+local ESPObjects = {}
+
+-- Função para criar ESP
+local function CreateESP(character, color)
+    if character and character:FindFirstChild("HumanoidRootPart") then
+        local highlight = Instance.new("Highlight")
+        highlight.Parent = character
+        highlight.FillColor = color
+        highlight.OutlineColor = Color3.new(1, 1, 1)
+        highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+        table.insert(ESPObjects, highlight)
+        return highlight
+    end
+end
+
+-- Função para limpar ESPs
+local function ClearESP()
+    for _, esp in ipairs(ESPObjects) do
+        if esp then
+            esp:Destroy()
+        end
+    end
+    ESPObjects = {}
+end
+
+-- Estado do ESP
+local ESPEnabled = false
+
+-- Toggle para ativar/desativar ESP
+VisualTab:CreateToggle("ESP Jogadores", false, function(state)
+    ESPEnabled = state
+    ClearESP()
+
+    if ESPEnabled then
+        for _, player in ipairs(game.Players:GetPlayers()) do
+            if player.Character then
+                local role = "Inocente" -- Padrão
+
+                -- Identificar funções dos jogadores no MM2
+                if player.Backpack:FindFirstChild("Gun") or (player.Character:FindFirstChild("Gun") ~= nil) then
+                    role = "Xerife"
+                elseif player.Backpack:FindFirstChild("Knife") or (player.Character:FindFirstChild("Knife") ~= nil) then
+                    role = "Assassino"
+                end
+
+                -- Definir cor baseada no papel
+                local color = Color3.fromRGB(0, 0, 139) -- Azul Escuro para Inocentes
+                if role == "Xerife" then
+                    color = Color3.fromRGB(0, 255, 0) -- Verde para Xerifes
+                elseif role == "Assassino" then
+                    color = Color3.fromRGB(255, 0, 0) -- Vermelho para Assassinos
+                end
+
+                CreateESP(player.Character, color)
+            end
+        end
+    end
+end)
+
+-- Botão para remover ESPs
+VisualTab:CreateButton("Remover ESP", function()
+    ClearESP()
+    ESPEnabled = false
+end)
